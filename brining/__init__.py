@@ -107,7 +107,7 @@ import errno
 import inspect
 
 if sys.version_info[1] < 7: #python 2.6 or earlier
-    from  ordereddict import OrderedDict
+    from ordereddict import OrderedDict
 else:
     from collections import OrderedDict
 

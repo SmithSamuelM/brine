@@ -252,10 +252,24 @@ class DebrineTestCase(unittest.TestCase):
         logger.debug( "Dumps:\n%s" % (debrinee._dumps()))        
         self.assertEqual(debrinee._dumps(), w)          
         
-
+def setupLogging():
+    """ Setup loggin for tests"""
+    global logger
+    
+    logger = logging.getLogger(__name__) #name logger after module
+    logger.setLevel(logging.DEBUG)
+    
+    basicConsoleHandler = logging.StreamHandler() #sys.stderr
+    basicformatter = logging.Formatter('%(message)s') #standard format
+    basicConsoleHandler.setFormatter(basicformatter)
+    logger.addHandler(basicConsoleHandler)
+    logger.propagate = False    
+                
         
 def testSome():
     """ Unittest runner """
+    setupLogging()
+    
     tests = []
     tests.append('testDebrinesBasic')
     tests.append('testDebrinesRecursive')
@@ -268,6 +282,8 @@ def testSome():
         
 def testAll():
     """ Unittest runner """
+    setupLogging()
+    
     suite = unittest.TestLoader().loadTestsFromTestCase(DebrineTestCase)
     unittest.TextTestRunner(verbosity=2).run(suite)    
 
@@ -283,7 +299,7 @@ if __name__ == '__main__' and __package__ is None:
     logger.propagate = False
     
 
-    #testAll() #run all unittests
+    testAll() #run all unittests
     
-    testSome()#only run some
+    #testSome()#only run some
 

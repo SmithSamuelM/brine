@@ -12,13 +12,13 @@ else:
 import simplejson as json
 
 #from libs import brining
-from brining import Brine
+from brining import Brine, brined
 
 class BrineTestCase(unittest.TestCase):
-    """ Test mixin"""
-    
+    """ Test decorator """
     def setUp(self):
-        class B(Brine):
+        @brined()
+        class B(object):
             X = 0 #class attribute
             Y = -1 #class attribute
             def __init__(self):
@@ -488,11 +488,11 @@ class BrineTestCase(unittest.TestCase):
           
     def testDumpLoad(self):
         """ Dump to File, Load from File tests"""
-        brined = self.B()
-        brined.x =  1
-        brined.y =  2
-        brined.z =  3
-        logger.debug("Brined: \n%s" % brined._dumps())
+        brinee = self.B()
+        brinee.x =  1
+        brinee.y =  2
+        brinee.z =  3
+        logger.debug("Brined: \n%s" % brinee._dumps())
         s = \
 """{
   "x": 1,
@@ -500,17 +500,17 @@ class BrineTestCase(unittest.TestCase):
   "z": 3,
   "@class": "B"
 }"""
-        self.assertEqual(brined._dumps(), s)
+        self.assertEqual(brinee._dumps(), s)
         
         filename = ".testdumpfile"
         logger.debug("\nDump to filename %s" % filename)
-        brined._dump(filename)
+        brinee._dump(filename)
         
         with open(filename, "r") as f:
             r = f.read()
 
         logger.debug("File contents: \n%s" % r)
-        self.assertEqual(brined._dumps(), r)
+        self.assertEqual(brinee._dumps(), r)
         
         logger.debug("\nLoad from filename %s" % filename)
         w = \
@@ -523,9 +523,9 @@ class BrineTestCase(unittest.TestCase):
         with open(filename, "w") as f:
             f.write(w)
         
-        brined._load(filename)
-        logger.debug("After Load: \n%s" % brined._dumps())
-        self.assertEqual(brined._dumps(), w)
+        brinee._load(filename)
+        logger.debug("After Load: \n%s" % brinee._dumps())
+        self.assertEqual(brinee._dumps(), w)
         
     def testDumpsUnhintedlyRecursive(self):
         """ Dumps unhintely recursive"""
@@ -662,10 +662,25 @@ class BrineTestCase(unittest.TestCase):
   "name": "Over Less"
 }"""        
         self.assertEqual(over._dumps(), s)
+
+def setupLogging():
+    """ Setup loggin for tests"""
+    global logger
+    
+    logger = logging.getLogger(__name__) #name logger after module
+    logger.setLevel(logging.DEBUG)
+    
+    basicConsoleHandler = logging.StreamHandler() #sys.stderr
+    basicformatter = logging.Formatter('%(message)s') #standard format
+    basicConsoleHandler.setFormatter(basicformatter)
+    logger.addHandler(basicConsoleHandler)
+    logger.propagate = False    
         
         
 def testSome():
     """ Unittest runner """
+    setupLogging()
+    
     tests = []
     tests.append('testDumpsBasic')
     tests.append('testDumpsKeys')
@@ -684,22 +699,14 @@ def testSome():
         
 def testAll():
     """ Unittest runner """
+    setupLogging()
+    
     suite = unittest.TestLoader().loadTestsFromTestCase(BrineTestCase)
     unittest.TextTestRunner(verbosity=2).run(suite)    
 
 if __name__ == '__main__' and __package__ is None:
     
-    logger = logging.getLogger(__name__) #name logger after module
-    logger.setLevel(logging.DEBUG)
+    testAll() #run all unittests
     
-    basicConsoleHandler = logging.StreamHandler() #sys.stderr
-    basicformatter = logging.Formatter('%(message)s') #standard format
-    basicConsoleHandler.setFormatter(basicformatter)
-    logger.addHandler(basicConsoleHandler)
-    logger.propagate = False
-    
-
-    #testAll() #run all unittests
-    
-    testSome()#only run some
+    #testSome()#only run some
 
