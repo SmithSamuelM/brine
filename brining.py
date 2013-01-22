@@ -286,7 +286,8 @@ def update(self, dct):
             for serializiblilty before updating them from it. This is slower.
         If _Propertied (default False) then update attributes of self that
           are data descripter properties.
-        If _Hinted (default True) The include class hint on dump and require on load
+        If _Hinted (default True) then include class hint on dump and require on load
+        If _Extendable (default False) then allow new attributes on update
 
         Private attributes and functions are always excluded from the update.
         
