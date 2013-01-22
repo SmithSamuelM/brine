@@ -12,7 +12,7 @@ else:
 import simplejson as json
 
 #from libs import brining
-from libs.brining import Brine, brined
+from brining import Brine, brined
 
 class BrineTestCase(unittest.TestCase):
     """ Test decorator """
