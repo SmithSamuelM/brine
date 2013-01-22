@@ -24,7 +24,7 @@ in name only.
 
 Example Usage:
 ```python
-from libs.brining import brined, Brine, debrines
+from brining import brined, Brine, debrines
 ```
 
 Decorator:
