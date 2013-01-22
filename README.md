@@ -16,14 +16,16 @@ Utility function debrine(s) can regenerate new objects from
 a hinted serialization.
 
 Allows round tripping Python declassifiction/ JSON serialization,
-JSON deserialization / Python classifiction.
+JSON deserialization / Python classification.
 
 Major limitation vis a vis pickle is that the hint does not guarantee that 
 the same class is used for both serialization and deserialization other than
 in name only.
 
 Example Usage:
+```python
 from libs.brining import brined, Brine, debrines
+```
 
 Decorator:
 
