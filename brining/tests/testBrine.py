@@ -1,4 +1,8 @@
-""" Unit Tests """
+""" Unit Tests
+
+See LICENSE.txt for Licensing details
+Copyright (c) <2013> <Samuel M. Smith>
+"""
 import sys
 import os
 import logging
@@ -210,7 +214,8 @@ class BrineTestCase(unittest.TestCase):
   "name": "Over",
   "@class": "B"
 }"""
-        self.assertEqual(over._dumps(), s)        
+        self.assertEqual(over._dumps(), s)
+        
     
     def testDumpsSafely(self):
         """ Dumps with unserializible attributes"""

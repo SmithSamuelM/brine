@@ -1,6 +1,8 @@
 """
     test package for brining module
 
+See LICENSE.txt for Licensing details
+Copyright (c) <2013> <Samuel M. Smith>
 """
 
 

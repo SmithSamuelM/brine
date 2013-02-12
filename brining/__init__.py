@@ -1,4 +1,5 @@
-""" brining.py
+""" brining
+
     Provides inplace augmentation of python classes with automated
     Python to Json, and Json to Python object mapping via
     either class decorator or inherited mixin class. This also supports
@@ -99,6 +100,9 @@
     getattr(b, '@class')
     
     AttributeError: 'B' object has no attribute '@class'
+    
+    See LICENSE.txt for Licensing details
+    Copyright (c) <2013> <Samuel M. Smith>
     
 """
 import sys
