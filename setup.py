@@ -9,7 +9,7 @@
 from setuptools import setup, find_packages
 
 setup(  name='brining',
-        version='0.2.4',
+        version='0.2.5',
         description='Python object to/from JSON serialization/deserialization module',
         url='https://github.com/SmithSamuelM/brine',
         author='Samuel M Smith',
