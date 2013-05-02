@@ -668,6 +668,59 @@ class BrineTestCase(unittest.TestCase):
 }"""        
         self.assertEqual(over._dumps(), s)
 
+    def testDumpableDeepRecursive(self):
+        """ Dumpable deep recursive"""
+        over = self.B()
+        over.name = "Over"
+        over.under = self.B()
+        over.a = 2
+        over.under.name = "Under"
+        over.under.a =  3
+        logger.debug("\nDumpable Recursive.")        
+        logger.debug("Over: \n%s" % (over._dumpable()))
+        logger.debug("Under: \n%s" % (over.under._dumpable()))
+        dumpable = over._dumpable(deep=True)
+        logger.debug("Over deep: \n%s" % (dumpable, ))
+        self.assertDictEqual(dumpable, OrderedDict([('a', 2), ('name', 'Over'),
+                ('under', OrderedDict([('a', 3), ('name', 'Under'),
+                ('@class', 'B')])), ('@class', 'B')]))
+        
+        dumped = json.dumps(dumpable, indent=2)
+        logger.debug("Dumped: \n%s" % (dumped))        
+                                
+        s = \
+"""{
+  "a": 2,
+  "name": "Over",
+  "under": {
+    "a": 3,
+    "name": "Under",
+    "@class": "B"
+  },
+  "@class": "B"
+}"""
+        self.assertEqual(dumped, s)        
+         
+        
+        self.B._Keys = [ 'name', 'under']
+        logger.debug("Recursive with keys: \n%s" % (self.B._Keys))
+        logger.debug("Over: \n%s" % (over._dumpable()))
+        logger.debug("Under: \n%s" % (over.under._dumpable()))
+        dumpable = over._dumpable(deep=True)
+        logger.debug("Over deep: \n%s" % (dumpable, ))
+        self.assertDictEqual(dumpable, OrderedDict([('name', 'Over'),
+                ('under', OrderedDict([('name', 'Under'), ('@class', 'B')])),
+                ('@class', 'B')]))
+
+        self.B._Keys = [ 'name']
+        logger.debug("Recursive with keys: \n%s" % (self.B._Keys))
+        logger.debug("Over: \n%s" % (over._dumpable()))
+        logger.debug("Under: \n%s" % (over.under._dumpable()))        
+        dumpable = over._dumpable(deep=True)
+        logger.debug("Over deep: \n%s" % (dumpable, ))
+        self.assertDictEqual(dumpable, OrderedDict([('name', 'Over'), ('@class', 'B')]))
+
+
 def setupLogging():
     """ Setup loggin for tests"""
     global logger
@@ -697,6 +750,7 @@ def testSome():
     tests.append('testDumpLoad')
     tests.append('testDumpsUnhintedlyRecursive')
     tests.append('testLoadsUnhintedlyRecursive')
+    tests.append('testDumpableDeepRecursive')
     
     
     suite = unittest.TestSuite(map(BrineTestCase, tests))    

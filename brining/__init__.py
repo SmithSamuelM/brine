@@ -157,7 +157,7 @@ def brined(keys=None, propertied=False, safed=False, hinted=True, extendable=Fal
                 new attributes in object.
             
         These will set the associated class attributes:
-            _Keys, __Propertied, _Safed, _Hinted, _Extendable
+            _Keys, _Propertied, _Safed, _Hinted, _Extendable
         
 
     """
@@ -208,10 +208,14 @@ def brinify(cls, keys=None, propertied=False, safed=False, hinted=True, extendab
     return cls
 
 
-def dumpable(self):
+def dumpable(self, deep=False):
     """
         Return nested ordered dict of dumpable attributes including
         brined objects
+        
+        if deep is True then recursively operate ._dumpable on Briner instances
+            This is useful if want to convert to dumpable full nested Briners
+            when using as standalone function not part of dump or dumps
     """
     if self._Keys is None:
         keys = self.__dict__.keys() #include instance attribute keys
@@ -236,9 +240,9 @@ def dumpable(self):
         
         if inspect.isroutine(attr): continue  #skip methods
         
-        #if isinstance(attr, Briner): #include Briner instances
-            ##dumpable[name] = attr._dumpable() #recusively dump Briner instances
-            #continue
+        if deep and hasattr(attr, '_Brined'): # descend into Brined objects
+            dumpable[name] = attr._dumpable() #recusively operate on Briner instances
+            continue
         
         if not hasattr(attr, '_Brined') and self._Safed:
             try: #last resort, skip attributes that are not json serializible

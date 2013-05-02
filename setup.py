@@ -2,20 +2,23 @@
 
     Basic setup file to enable pip install
     
-    
-"""
+    http://python-distribute.org/distribute_setup.py
 
-from distutils.core import setup
+    python setup.py register -r jive sdist upload -r jive
+"""
+from setuptools import setup, find_packages
+
 setup(  name='brining',
-        version='0.2.2',
-        #py_modules=['brining'],
-        requires='simplejson',
-        packages=['brining'],
-        package_dir={'brining': 'brining'},        
-        package_data={'brining': ['tests/*.py']},
+        version='0.2.3',
         description='Python object to/from JSON serialization/deserialization module',
+        url='https://github.com/SmithSamuelM/brine',
         author='Samuel M Smith',
         author_email='smith.samuel.m@gmail.com',
-        url='https://github.com/SmithSamuelM/brine',      
+        install_requires = ['simplejson', 'argparse', 'ordereddict'],
+        packages = find_packages(exclude=[]),
+        package_data={'': ['*.txt',  '*.ico',  '*.json', '*.md', '*.conf']},
+        tests_require = ['nose'],
+        test_suite = 'nose.collector',        
+        license="MIT",
+        keywords='Python object JSON serialization'              
       )
-
