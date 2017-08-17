@@ -101,6 +101,10 @@
     
     AttributeError: 'B' object has no attribute '@class'
     
+    To dump a list or other sequence of brined objects
+    brinees = [Brine(),Brine(),Brine()]
+    json.dumps(brinees, default=brining.default, indent=2)
+    
     See LICENSE.txt for Licensing details
     Copyright (c) <2013> <Samuel M. Smith>
     

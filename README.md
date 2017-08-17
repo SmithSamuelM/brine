@@ -18,7 +18,7 @@ a hinted serialization.
 Allows round tripping Python declassifiction/ JSON serialization,
 JSON deserialization / Python classification.
 
-Major limitation vis a vis pickle is that the hint does not guarantee that 
+Major limitation vis a vis pickle is that the hint does not guarantee that
 the same class is used for both serialization and deserialization other than
 in name only.
 
@@ -116,4 +116,6 @@ AttributeError: 'B' object has no attribute '@class'
 
 See LICENSE.txt for Licensing details
 Copyright (c) <2013> <Samuel M. Smith>
-    
+
+
+<a href="https://app.codesponsor.io/link/v1zgv5CNxzGi3oHsfMCbG1Yr/SmithSamuelM/brine" rel="nofollow"><img src="https://app.codesponsor.io/embed/v1zgv5CNxzGi3oHsfMCbG1Yr/SmithSamuelM/brine.svg" style="width: 888px; height: 68px;" alt="Sponsor" /></a>
