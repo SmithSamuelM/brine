@@ -13,9 +13,12 @@ def testAll():
     import testBrine
     import testBrined
     import testDebrine
-    
+
     testBrine.testAll()
     testBrined.testAll()
     testDebrine.testAll()
-    
-    
+
+
+if __name__ == '__main__' and __package__ is None:
+
+    testAll()

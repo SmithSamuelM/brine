@@ -9,10 +9,8 @@ import os
 import logging
 import unittest
 
-if sys.version_info[1] < 7: #python 2.6 or earlier
-    from  ordereddict import OrderedDict
-else:
-    from collections import OrderedDict
+#from collections import OrderedDict
+from ioflo.aid import odict as OrderedDict
 
 import simplejson as json
 
@@ -27,9 +25,9 @@ class BrineTestCase(unittest.TestCase):
             X = 0 #class attribute
             Y = -1 #class attribute
             def __init__(self):
-                
+
                 self._p = 0
-                
+
             def getp(self):
                 return self._p
             def setp(self, value):
@@ -37,11 +35,11 @@ class BrineTestCase(unittest.TestCase):
             def delp(self):
                 del self._p
             p = property(getp, setp, delp, "Property p of T")
-    
+
             @staticmethod
             def pest():
                 pass
-        
+
         self.B = B #save reference to class
         self.brined = B()
         self.brined.x =  1
@@ -51,18 +49,18 @@ class BrineTestCase(unittest.TestCase):
         self.brined._v = 5
         #logger.debug("\nself.brined dir = \n%s\nself.brined __dict__ = \n%s" %\
                     #(dir(self.brined), self.brined.__dict__))
-    
+
     def tearDown(self):
-        pass    
+        pass
 
     def testDumpsBasic(self):
         """ Dumps """
         logger.debug("\nBasic Dumps\n")
         logger.debug("\nself.brined dir = \n%s\nself.brined __dict__ = \n%s" %\
-                            (dir(self.brined), self.brined.__dict__))        
+                            (dir(self.brined), self.brined.__dict__))
         logger.debug( "Dumpable:\n%s" % (self.brined._dumpable()))
         logger.debug( "Dumps:\n%s" % (self.brined._dumps()))
-   
+
         self.assertDictEqual(self.brined._dumpable(),
                 OrderedDict([('x', 1), ('y', 2), ('z', 3), ('@class', 'B')]))
         s = \
@@ -71,15 +69,15 @@ class BrineTestCase(unittest.TestCase):
   "y": 2,
   "z": 3,
   "@class": "B"
-}"""        
+}"""
         self.assertEqual(self.brined._dumps(), s)
-        
+
         logger.debug("\nWith Properties\n")
         #with properties
         self.B._Propertied = True
         logger.debug( "Dumpable:\n%s" % (self.brined._dumpable()))
         logger.debug( "Dumps:\n%s" % (self.brined._dumps()))
-   
+
         self.assertDictEqual(self.brined._dumpable(),
                 OrderedDict([('p', 0), ('x', 1), ('y', 2), ('z', 3), ('@class', 'B')]))
         s = \
@@ -89,19 +87,19 @@ class BrineTestCase(unittest.TestCase):
   "y": 2,
   "z": 3,
   "@class": "B"
-}"""        
+}"""
         self.assertEqual(self.brined._dumps(), s)
-        
+
 
     def testDumpsKeys(self):
         """ Dumps with reordered keys list """
-        
+
         self.B._Keys = ['z', 'x', 'y']
         logger.debug("\nDump With Keys: %s \n", self.B._Keys)
-        
+
         logger.debug("Dumpable:\n%s." % (self.brined._dumpable()))
         logger.debug("Dumps:\n%s" % (self.brined._dumps()))
-                                     
+
         self.assertDictEqual(self.brined._dumpable(),
                 OrderedDict([('z', 3), ('x', 1), ('y', 2), ('@class', 'B')]))
         s = \
@@ -110,16 +108,16 @@ class BrineTestCase(unittest.TestCase):
   "x": 1,
   "y": 2,
   "@class": "B"
-}"""        
+}"""
         self.assertEqual(self.brined._dumps(), s)
-        
+
         logger.debug("\nWith Properties\n")
         #with properties
         self.B._Propertied = True
-        
+
         logger.debug("Dumpable:\n%s." % (self.brined._dumpable()))
         logger.debug("Dumps:\n%s" % (self.brined._dumps()))
-                                     
+
         self.assertDictEqual(self.brined._dumpable(),
                 OrderedDict([('z', 3), ('x', 1), ('y', 2), ('@class', 'B')]))
         s = \
@@ -128,14 +126,14 @@ class BrineTestCase(unittest.TestCase):
   "x": 1,
   "y": 2,
   "@class": "B"
-}"""        
+}"""
         self.assertEqual(self.brined._dumps(), s)
-        
+
         self.B._Keys = ['z', 'x', 'y', 'p']
-        logger.debug("\nDump With Properties and Keys: %s \n", self.B._Keys)        
+        logger.debug("\nDump With Properties and Keys: %s \n", self.B._Keys)
         logger.debug( "Dumpable:\n%s" % (self.brined._dumpable()))
         logger.debug( "Dumps:\n%s" % (self.brined._dumps()))
-   
+
         self.assertDictEqual(self.brined._dumpable(),
                  OrderedDict([('z', 3), ('x', 1), ('y', 2), ('p', 0), ('@class', 'B')]))
         s = \
@@ -145,16 +143,16 @@ class BrineTestCase(unittest.TestCase):
   "y": 2,
   "p": 0,
   "@class": "B"
-}"""        
+}"""
         self.assertEqual(self.brined._dumps(), s)
 
 
         self.B._Keys = ['x', 'w', 'y', '_t', '_u']
         logger.debug("With missing and extra keys: %s." % (self.B._Keys))
         logger.debug("Dumpable: %s." % (self.brined._dumpable()))
-        logger.debug("Dumps: %s" % (self.brined._dumps()))        
+        logger.debug("Dumps: %s" % (self.brined._dumps()))
         self.assertDictEqual(self.brined._dumpable(),
-                             OrderedDict([('x', 1), ('y', 2), ('@class', 'B')]))                
+                             OrderedDict([('x', 1), ('y', 2), ('@class', 'B')]))
         s = \
 """{
   "x": 1,
@@ -171,11 +169,11 @@ class BrineTestCase(unittest.TestCase):
         over.a = 2
         over.under.name = "Under"
         over.under.a =  3
-        logger.debug("\nDumps Recursive.")        
+        logger.debug("\nDumps Recursive.")
         logger.debug("Over: \n%s" % (over._dumpable()))
-        logger.debug("Under: \n%s" % (over.under._dumpable()))        
-        logger.debug("Over Dumps: \n%s" % (over._dumps()))        
-                        
+        logger.debug("Under: \n%s" % (over.under._dumpable()))
+        logger.debug("Over Dumps: \n%s" % (over._dumps()))
+
         s = \
 """{
   "a": 2,
@@ -188,12 +186,12 @@ class BrineTestCase(unittest.TestCase):
   "@class": "B"
 }"""
         self.assertEqual(over._dumps(), s)
-        
+
         self.B._Keys = [ 'name', 'under']
         logger.debug("Recursive with keys: \n%s" % (self.B._Keys))
         logger.debug("Over: \n%s" % (over._dumpable()))
-        logger.debug("Under: \n%s" % (over.under._dumpable()))        
-        logger.debug("Over Dumps: \n%s" % (over._dumps()))         
+        logger.debug("Under: \n%s" % (over.under._dumpable()))
+        logger.debug("Over Dumps: \n%s" % (over._dumps()))
         s = \
 """{
   "name": "Over",
@@ -204,19 +202,19 @@ class BrineTestCase(unittest.TestCase):
   "@class": "B"
 }"""
         self.assertEqual(over._dumps(), s)
-        
+
         self.B._Keys = [ 'name']
         logger.debug("Recursive with keys: \n%s" % (self.B._Keys))
         logger.debug("Over: \n%s" % (over._dumpable()))
-        logger.debug("Under: \n%s" % (over.under._dumpable()))        
-        logger.debug("Over Dumps: \n%s" % (over._dumps()))        
+        logger.debug("Under: \n%s" % (over.under._dumpable()))
+        logger.debug("Over Dumps: \n%s" % (over._dumps()))
         s = \
 """{
   "name": "Over",
   "@class": "B"
 }"""
-        self.assertEqual(over._dumps(), s)        
-    
+        self.assertEqual(over._dumps(), s)
+
     def testDumpsSafely(self):
         """ Dumps with unserializible attributes"""
         class A(object):
@@ -226,16 +224,16 @@ class BrineTestCase(unittest.TestCase):
         self.brined.name = "unserattr"
         self.brined.nsa = a
         logger.debug("\nTest Dumps Unserializable Attribute." )
-        
+
         logger.debug("Dumpable unsafely:\n%s" % self.brined._dumpable())
         self.assertEqual(self.brined._dumpable().keys(),
                          ['name','nsa','x', 'y','z', '@class', ])
-            
+
         with self.assertRaises(TypeError):
             logger.debug("Dumps unsafely:" )
             logger.debug("%s" % self.brined._dumps())
-            
-        
+
+
         self.B._Safed = True
         logger.debug("Dumpable safely:\n%s" % self.brined._dumpable())
         self.assertDictEqual(self.brined._dumpable(),
@@ -244,7 +242,7 @@ class BrineTestCase(unittest.TestCase):
                                           ('y', 2),
                                           ('z', 3),
                                           ('@class', 'B')]))
-        logger.debug("Dumps unsafely:\n%s" % self.brined._dumps())        
+        logger.debug("Dumps unsafely:\n%s" % self.brined._dumps())
         s = \
 """{
   "name": "unserattr",
@@ -254,7 +252,7 @@ class BrineTestCase(unittest.TestCase):
   "@class": "B"
 }"""
         self.assertEqual(self.brined._dumps(), s)
-                
+
     def testLoadsBasic(self):
         """ Loads tests"""
         logger.debug("\nTest Loads Basic." )
@@ -267,18 +265,18 @@ class BrineTestCase(unittest.TestCase):
   "@class": "B"
 }"""
         self.assertEqual(self.brined._dumps(), s)
-        
+
         s = \
 """{
   "x": 4,
   "y": 5,
   "z": 6,
   "@class": "B"
-}"""                        
+}"""
         self.brined._loads(s)
         logger.debug("After Loads:\n%s" % self.brined._dumps())
         self.assertEqual(self.brined._dumps(), s)
-        
+
         logger.debug("With Properly:")
         self.B._Propertied = True
         logger.debug("Before Loads:\n%s" % self.brined._dumps())
@@ -291,7 +289,7 @@ class BrineTestCase(unittest.TestCase):
   "@class": "B"
 }"""
         self.assertEqual(self.brined._dumps(), s)
-        
+
         s = \
 """{
   "p": 7,
@@ -299,11 +297,11 @@ class BrineTestCase(unittest.TestCase):
   "y": 9,
   "z": 10,
   "@class": "B"
-}"""                        
+}"""
         self.brined._loads(s)
         logger.debug("After Loads:\n%s" % self.brined._dumps())
-        self.assertEqual(self.brined._dumps(), s)        
-        
+        self.assertEqual(self.brined._dumps(), s)
+
         self.B._Keys = ['x', 'y', 'p']
         logger.debug("With Keys: %s" % self.B._Keys)
         logger.debug("Before Loads:\n%s" % self.brined._dumps())
@@ -315,7 +313,7 @@ class BrineTestCase(unittest.TestCase):
   "@class": "B"
 }"""
         self.assertEqual(self.brined._dumps(), s)
-        
+
         s = \
 """{
   "p": 11,
@@ -323,7 +321,7 @@ class BrineTestCase(unittest.TestCase):
   "y": 13,
   "z": 14,
   "@class": "B"
-}"""                        
+}"""
         self.brined._loads(s)
         logger.debug("After Loads:\n%s" % self.brined._dumps())
         s = \
@@ -333,8 +331,8 @@ class BrineTestCase(unittest.TestCase):
   "p": 11,
   "@class": "B"
 }"""
-        self.assertEqual(self.brined._dumps(), s)         
-        
+        self.assertEqual(self.brined._dumps(), s)
+
     def testLoadsSafely(self):
         """ Loads into unserializible attributes"""
         class A(object):
@@ -354,9 +352,9 @@ class BrineTestCase(unittest.TestCase):
   "z": 3,
   "@class": "B"
 }"""
-        self.assertEqual(self.brined._dumps(), s)        
-        
-        logger.debug("Loads safely:" ) 
+        self.assertEqual(self.brined._dumps(), s)
+
+        logger.debug("Loads safely:" )
         s = \
 """{
   "name": "nsa ignored",
@@ -367,7 +365,7 @@ class BrineTestCase(unittest.TestCase):
   "a": 4,
   "@class": "B"
 }"""
-        self.brined._loads(s)     
+        self.brined._loads(s)
         logger.debug("After Loads:\n%s" % self.brined._dumps())
         s = \
 """{
@@ -376,9 +374,9 @@ class BrineTestCase(unittest.TestCase):
   "y": 2,
   "z": 3,
   "@class": "B"
-}"""        
+}"""
         self.assertEqual(self.brined._dumps(), s)
-        
+
         self.B._Safed = False
         s = \
 """{
@@ -392,7 +390,7 @@ class BrineTestCase(unittest.TestCase):
         self.brined._loads(s)
         logger.debug("After Loads:\n%s" % self.brined._dumps())
         self.assertEqual(self.brined._dumps(), s)
-        
+
     def testLoadsRecursive(self):
         """ Loads recursive"""
         over = self.B()
@@ -401,11 +399,11 @@ class BrineTestCase(unittest.TestCase):
         over.a = 2
         over.under.name = "Under"
         over.under.a =  3
-        logger.debug("\nLoads Recursive.")        
+        logger.debug("\nLoads Recursive.")
         logger.debug("Over: \n%s" % (over._dumpable()))
-        logger.debug("Under: \n%s" % (over.under._dumpable()))        
-        logger.debug("Before Loads: \n%s" % (over._dumps()))        
-                        
+        logger.debug("Under: \n%s" % (over.under._dumpable()))
+        logger.debug("Before Loads: \n%s" % (over._dumps()))
+
         s = \
 """{
   "a": 2,
@@ -428,16 +426,16 @@ class BrineTestCase(unittest.TestCase):
     "@class": "B"
   },
   "@class": "B"
-}"""        
+}"""
         over._loads(s)
         logger.debug("After Loads:\n%s" %  over._dumps())
-        self.assertEqual( over._dumps(), s)        
-        
+        self.assertEqual( over._dumps(), s)
+
         self.B._Keys = [ 'name', 'under']
         logger.debug("Recursive with keys: \n%s" % (self.B._Keys))
         logger.debug("Over: \n%s" % (over._dumpable()))
-        logger.debug("Under: \n%s" % (over.under._dumpable()))        
-        logger.debug("Over Dumps: \n%s" % (over._dumps()))         
+        logger.debug("Under: \n%s" % (over.under._dumpable()))
+        logger.debug("Over Dumps: \n%s" % (over._dumps()))
         s = \
 """{
   "name": "Over",
@@ -456,16 +454,16 @@ class BrineTestCase(unittest.TestCase):
     "@class": "B"
   },
   "@class": "B"
-}"""        
+}"""
         over._loads(s)
         logger.debug("After Loads:\n%s" %   over._dumps())
         self.assertEqual(  over._dumps(), s)
-        
+
         self.B._Keys = [ 'name']
         logger.debug("Recursive with keys: \n%s" % (self.B._Keys))
         logger.debug("Over: \n%s" % (over._dumpable()))
-        logger.debug("Under: \n%s" % (over.under._dumpable()))        
-        logger.debug("Over Dumps: \n%s" % (over._dumps()))        
+        logger.debug("Under: \n%s" % (over.under._dumpable()))
+        logger.debug("Over Dumps: \n%s" % (over._dumps()))
         s = \
 """{
   "name": "Over More",
@@ -480,17 +478,17 @@ class BrineTestCase(unittest.TestCase):
     "@class": "B"
   },
   "@class": "B"
-}"""        
+}"""
         over._loads(s)
         logger.debug("After Loads:\n%s" %   over._dumps())
         s = \
 """{
   "name": "Over Less",
   "@class": "B"
-}"""        
+}"""
         self.assertEqual(over._dumps(), s)
-        
-          
+
+
     def testDumpLoad(self):
         """ Dump to File, Load from File tests"""
         brinee = self.B()
@@ -506,17 +504,17 @@ class BrineTestCase(unittest.TestCase):
   "@class": "B"
 }"""
         self.assertEqual(brinee._dumps(), s)
-        
+
         filename = ".testdumpfile"
         logger.debug("\nDump to filename %s" % filename)
         brinee._dump(filename)
-        
+
         with open(filename, "r") as f:
             r = f.read()
 
         logger.debug("File contents: \n%s" % r)
         self.assertEqual(brinee._dumps(), r)
-        
+
         logger.debug("\nLoad from filename %s" % filename)
         w = \
 """{
@@ -527,11 +525,11 @@ class BrineTestCase(unittest.TestCase):
 }"""
         with open(filename, "w") as f:
             f.write(w)
-        
+
         brinee._load(filename)
         logger.debug("After Load: \n%s" % brinee._dumps())
         self.assertEqual(brinee._dumps(), w)
-        
+
     def testDumpsUnhintedlyRecursive(self):
         """ Dumps unhintely recursive"""
         self.B._Hinted = False
@@ -541,11 +539,11 @@ class BrineTestCase(unittest.TestCase):
         over.a = 2
         over.under.name = "Under"
         over.under.a =  3
-        logger.debug("\nDumps Recursive.")        
+        logger.debug("\nDumps Recursive.")
         logger.debug("Over: \n%s" % (over._dumpable()))
-        logger.debug("Under: \n%s" % (over.under._dumpable()))        
-        logger.debug("Over Dumps: \n%s" % (over._dumps()))        
-                        
+        logger.debug("Under: \n%s" % (over.under._dumpable()))
+        logger.debug("Over Dumps: \n%s" % (over._dumps()))
+
         s = \
 """{
   "a": 2,
@@ -556,12 +554,12 @@ class BrineTestCase(unittest.TestCase):
   }
 }"""
         self.assertEqual(over._dumps(), s)
-        
+
         self.B._Keys = [ 'name', 'under']
         logger.debug("Recursive with keys: \n%s" % (self.B._Keys))
         logger.debug("Over: \n%s" % (over._dumpable()))
-        logger.debug("Under: \n%s" % (over.under._dumpable()))        
-        logger.debug("Over Dumps: \n%s" % (over._dumps()))         
+        logger.debug("Under: \n%s" % (over.under._dumpable()))
+        logger.debug("Over Dumps: \n%s" % (over._dumps()))
         s = \
 """{
   "name": "Over",
@@ -570,17 +568,17 @@ class BrineTestCase(unittest.TestCase):
   }
 }"""
         self.assertEqual(over._dumps(), s)
-        
+
         self.B._Keys = [ 'name']
         logger.debug("Recursive with keys: \n%s" % (self.B._Keys))
         logger.debug("Over: \n%s" % (over._dumpable()))
-        logger.debug("Under: \n%s" % (over.under._dumpable()))        
-        logger.debug("Over Dumps: \n%s" % (over._dumps()))        
+        logger.debug("Under: \n%s" % (over.under._dumpable()))
+        logger.debug("Over Dumps: \n%s" % (over._dumps()))
         s = \
 """{
   "name": "Over"
 }"""
-        self.assertEqual(over._dumps(), s)                       
+        self.assertEqual(over._dumps(), s)
 
     def testLoadsUnhintedlyRecursive(self):
         """ Loads recursive"""
@@ -591,11 +589,11 @@ class BrineTestCase(unittest.TestCase):
         over.a = 2
         over.under.name = "Under"
         over.under.a =  3
-        logger.debug("\nLoads Recursive.")        
+        logger.debug("\nLoads Recursive.")
         logger.debug("Over: \n%s" % (over._dumpable()))
-        logger.debug("Under: \n%s" % (over.under._dumpable()))        
-        logger.debug("Before Loads: \n%s" % (over._dumps()))        
-                        
+        logger.debug("Under: \n%s" % (over.under._dumpable()))
+        logger.debug("Before Loads: \n%s" % (over._dumps()))
+
         s = \
 """{
   "a": 2,
@@ -614,16 +612,16 @@ class BrineTestCase(unittest.TestCase):
     "a": 30,
     "name": "Under"
   }
-}"""        
+}"""
         over._loads(s)
         logger.debug("After Loads:\n%s" %  over._dumps())
-        self.assertEqual( over._dumps(), s)        
-        
+        self.assertEqual( over._dumps(), s)
+
         self.B._Keys = [ 'name', 'under']
         logger.debug("Recursive with keys: \n%s" % (self.B._Keys))
         logger.debug("Over: \n%s" % (over._dumpable()))
-        logger.debug("Under: \n%s" % (over.under._dumpable()))        
-        logger.debug("Over Dumps: \n%s" % (over._dumps()))         
+        logger.debug("Under: \n%s" % (over.under._dumpable()))
+        logger.debug("Over Dumps: \n%s" % (over._dumps()))
         s = \
 """{
   "name": "Over",
@@ -638,16 +636,16 @@ class BrineTestCase(unittest.TestCase):
   "under": {
     "name": "Under Less"
   }
-}"""        
+}"""
         over._loads(s)
         logger.debug("After Loads:\n%s" %   over._dumps())
         self.assertEqual(  over._dumps(), s)
-        
+
         self.B._Keys = [ 'name']
         logger.debug("Recursive with keys: \n%s" % (self.B._Keys))
         logger.debug("Over: \n%s" % (over._dumpable()))
-        logger.debug("Under: \n%s" % (over.under._dumpable()))        
-        logger.debug("Over Dumps: \n%s" % (over._dumps()))        
+        logger.debug("Under: \n%s" % (over.under._dumpable()))
+        logger.debug("Over Dumps: \n%s" % (over._dumps()))
         s = \
 """{
   "name": "Over More"
@@ -659,13 +657,13 @@ class BrineTestCase(unittest.TestCase):
   "under": {
     "name": "Under More"
   }
-}"""        
+}"""
         over._loads(s)
         logger.debug("After Loads:\n%s" %   over._dumps())
         s = \
 """{
   "name": "Over Less"
-}"""        
+}"""
         self.assertEqual(over._dumps(), s)
 
     def testDumpableDeepRecursive(self):
@@ -676,7 +674,7 @@ class BrineTestCase(unittest.TestCase):
         over.a = 2
         over.under.name = "Under"
         over.under.a =  3
-        logger.debug("\nDumpable Recursive.")        
+        logger.debug("\nDumpable Recursive.")
         logger.debug("Over: \n%s" % (over._dumpable()))
         logger.debug("Under: \n%s" % (over.under._dumpable()))
         dumpable = over._dumpable(deep=True)
@@ -684,10 +682,10 @@ class BrineTestCase(unittest.TestCase):
         self.assertDictEqual(dumpable, OrderedDict([('a', 2), ('name', 'Over'),
                 ('under', OrderedDict([('a', 3), ('name', 'Under'),
                 ('@class', 'B')])), ('@class', 'B')]))
-        
+
         dumped = json.dumps(dumpable, indent=2)
-        logger.debug("Dumped: \n%s" % (dumped))        
-                                
+        logger.debug("Dumped: \n%s" % (dumped))
+
         s = \
 """{
   "a": 2,
@@ -699,9 +697,9 @@ class BrineTestCase(unittest.TestCase):
   },
   "@class": "B"
 }"""
-        self.assertEqual(dumped, s)        
-         
-        
+        self.assertEqual(dumped, s)
+
+
         self.B._Keys = [ 'name', 'under']
         logger.debug("Recursive with keys: \n%s" % (self.B._Keys))
         logger.debug("Over: \n%s" % (over._dumpable()))
@@ -715,7 +713,7 @@ class BrineTestCase(unittest.TestCase):
         self.B._Keys = [ 'name']
         logger.debug("Recursive with keys: \n%s" % (self.B._Keys))
         logger.debug("Over: \n%s" % (over._dumpable()))
-        logger.debug("Under: \n%s" % (over.under._dumpable()))        
+        logger.debug("Under: \n%s" % (over.under._dumpable()))
         dumpable = over._dumpable(deep=True)
         logger.debug("Over deep: \n%s" % (dumpable, ))
         self.assertDictEqual(dumpable, OrderedDict([('name', 'Over'), ('@class', 'B')]))
@@ -724,21 +722,21 @@ class BrineTestCase(unittest.TestCase):
 def setupLogging():
     """ Setup loggin for tests"""
     global logger
-    
+
     logger = logging.getLogger(__name__) #name logger after module
     logger.setLevel(logging.DEBUG)
-    
+
     basicConsoleHandler = logging.StreamHandler() #sys.stderr
     basicformatter = logging.Formatter('%(message)s') #standard format
     basicConsoleHandler.setFormatter(basicformatter)
     logger.addHandler(basicConsoleHandler)
-    logger.propagate = False    
-        
-        
+    logger.propagate = False
+
+
 def testSome():
     """ Unittest runner """
     setupLogging()
-    
+
     tests = []
     tests.append('testDumpsBasic')
     tests.append('testDumpsKeys')
@@ -751,21 +749,21 @@ def testSome():
     tests.append('testDumpsUnhintedlyRecursive')
     tests.append('testLoadsUnhintedlyRecursive')
     tests.append('testDumpableDeepRecursive')
-    
-    
-    suite = unittest.TestSuite(map(BrineTestCase, tests))    
-    unittest.TextTestRunner(verbosity=2).run(suite) 
-        
+
+
+    suite = unittest.TestSuite(map(BrineTestCase, tests))
+    unittest.TextTestRunner(verbosity=2).run(suite)
+
 def testAll():
     """ Unittest runner """
     setupLogging()
-    
+
     suite = unittest.TestLoader().loadTestsFromTestCase(BrineTestCase)
-    unittest.TextTestRunner(verbosity=2).run(suite)    
+    unittest.TextTestRunner(verbosity=2).run(suite)
 
 if __name__ == '__main__' and __package__ is None:
-    
+
     testAll() #run all unittests
-    
+
     #testSome()#only run some
 
