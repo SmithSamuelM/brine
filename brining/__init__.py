@@ -114,8 +114,8 @@ import os
 import errno
 import inspect
 
-#from collections import OrderedDict as odict
-from ioflo.aid import odict
+from collections import OrderedDict as odict
+#from ioflo.aid import odict
 
 import simplejson as json
 

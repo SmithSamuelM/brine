@@ -9,8 +9,8 @@ import os
 import logging
 import unittest
 
-#from collections import OrderedDict
-from ioflo.aid import odict as OrderedDict
+from collections import OrderedDict
+#from ioflo.aid import odict as OrderedDict
 
 import simplejson as json
 
